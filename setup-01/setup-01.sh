@@ -35,6 +35,21 @@ sudo systemctl start docker
 
 sudo systemctl enable docker
 
+echo "## Add user account to docker group:"
+sudo usermod --append -G docker ${USER}
+GroupOK=0
+for G in $(id --name --groups) ; do
+  if [[ "${G}" == "docker" ]] ; then
+    GroupOK=1
+  fi
+done
+
+if [[ ${GroupOK} -ne 1 ]] ; then
+  echo "Missing the 'docker' group for ${USER}."
+  echo "Please logout and login again, then restart the script."
+  exit 1
+fi
+
 #echo "## Oracle Virtual Box Installation:"
 #
 #wget https://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo -P /etc/yum.repos.d/
@@ -70,5 +85,5 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 echo "Installed Minikube version:"
 minikube version
   
-minikube start --driver=none
+sudo /usr/local/bin/minikube start --driver=none
 
