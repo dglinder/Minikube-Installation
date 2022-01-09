@@ -27,7 +27,6 @@ sudo yum install -y yum-utils
 
 sudo yum-config-manager \
     --add-repo \
-    -y \
     https://download.docker.com/linux/centos/docker-ce.repo
 
 sudo yum install -y docker-ce docker-ce-cli containerd.io
@@ -49,9 +48,9 @@ sudo systemctl enable docker
 #yum install -y binutils kernel-devel kernel-headers libgomp make patch gcc glibc-headers glibc-devel dkms
 #
 #yum install -y VirtualBox-6.1
-#
+
 echo "## Kubectl Installation:"
-K8SRelease="$(https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
+K8SRelease="$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"
 curl -LO https://storage.googleapis.com/kubernetes-release/release/${K8SRelease}/bin/linux/amd64/kubectl
 
 chmod +x ./kubectl
@@ -59,14 +58,14 @@ chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
 echo "Installed kubectl version:"
-kubectl version --short
+set +e ; kubectl version --short ; set -e
 
 echo "### Conntrack Installation:"
-yum install -y conntrack -y
+sudo yum install -y conntrack
 
 echo "### Minikube Installation:"
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-install minikube-linux-amd64 /usr/local/bin/minikube
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 echo "Installed Minikube version:"
 minikube version
